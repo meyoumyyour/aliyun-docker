@@ -1,20 +1,44 @@
-name: Sync Unlock-Music to Aliyun
+name: Auto Sync Docker Images to Aliyun
 
 on:  
-  workflow_dispatch:
+  workflow_dispatch:      # 保留手动触发按钮
+  schedule:
+    - cron: '0 2 * * 3'   # 定时任务：每周三凌晨2点(UTC)自动运行，保持所有镜像最新
+
+# 提取公共环境变量，让代码更简洁
+env:
+  ALIYUN_REGISTRY: crpi-jlzkfoisf4mhudx0.cn-heyuan.personal.cr.aliyuncs.com
+  ALIYUN_NAMESPACE: fnnas-docker
 
 jobs:  
-  build:    
-    runs-on: ubuntu-latest    
+  sync-images:    
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false    # 关键：如果某一个镜像同步失败，不会中断其他镜像的同步
+      matrix:
+        # 【镜像清单】以后加镜像，只需要在这个列表里增加两行即可！
+        image:
+          # 1. 音乐解锁
+          - source: 'yuanter/unlock-music:latest'
+            target: 'unlock-music:latest'
+            
+          # 2. 之前你提到的 OpenClaw
+          - source: 'ghcr.io/phioranex/openclaw-docker:latest'
+            target: 'openclaw:latest'
+            
+          # 3. 示例：如果要加一个 nginx
+          # - source: 'nginx:latest'
+          #   target: 'nginx:latest'
+
     steps:      
       - name: 登录阿里云镜像仓库        
-        run: docker login -u ${{ secrets.ALIYUN_USERNAME }} -p ${{ secrets.ALIYUN_PASSWORD }} crpi-jlzkfoisf4mhudx0.cn-heyuan.personal.cr.aliyuncs.com      
+        run: docker login -u ${{ secrets.ALIYUN_USERNAME }} -p ${{ secrets.ALIYUN_PASSWORD }} ${{ env.ALIYUN_REGISTRY }}
         
-      - name: 从 Docker Hub 拉取 Unlock-Music 镜像        
-        run: docker pull yuanter/unlock-music:latest      
+      - name: 拉取源镜像 [ ${{ matrix.image.source }} ]
+        run: docker pull ${{ matrix.image.source }}      
         
-      - name: 打上你的阿里云专属标签        
-        run: docker tag yuanter/unlock-music:latest crpi-jlzkfoisf4mhudx0.cn-heyuan.personal.cr.aliyuncs.com/fnnas-docker/unlock-music:latest      
+      - name: 修改为阿里云专属标签        
+        run: docker tag ${{ matrix.image.source }} ${{ env.ALIYUN_REGISTRY }}/${{ env.ALIYUN_NAMESPACE }}/${{ matrix.image.target }}      
         
-      - name: 推送镜像到你的阿里云仓库        
-        run: docker push crpi-jlzkfoisf4mhudx0.cn-heyuan.personal.cr.aliyuncs.com/fnnas-docker/unlock-music:latest
+      - name: 推送镜像到阿里云仓库        
+        run: docker push ${{ env.ALIYUN_REGISTRY }}/${{ env.ALIYUN_NAMESPACE }}/${{ matrix.image.target }}
