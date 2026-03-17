@@ -36,7 +36,7 @@ jobs:
 
           # 5. nginx
           - source: 'nginx:latest'
-             target: 'nginx:latest'
+            target: 'nginx:latest'
 
           
           # 3. 示例：如果要加一个 nginx
