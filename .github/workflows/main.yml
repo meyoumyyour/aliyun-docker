@@ -35,7 +35,7 @@ jobs:
             target: 'open-webui:main'
 
           # 5. nginx
-           - source: 'nginx:latest'
+          - source: 'nginx:latest'
              target: 'nginx:latest'
 
           
