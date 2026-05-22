@@ -42,7 +42,7 @@ jobs:
             target: 'nginx:latest'
             
           # 6. MetaTube 影视刮削服务端 (本次新增)
-          - source: 'metatube/metatube-server:latest'
+          - source: 'ghcr.io/metatube-community/metatube-server:latest'
             target: 'metatube-server:latest'
           
     steps:      
