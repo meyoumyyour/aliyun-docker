@@ -1,6 +1,6 @@
 name: Auto Sync Docker Images to Aliyun
 
-on:  
+on:
   workflow_dispatch:      # 保留手动触发按钮
   schedule:
     - cron: '0 2 * * 3'   # 定时任务：每周三凌晨2点(UTC)自动运行，保持所有镜像最新
@@ -10,13 +10,13 @@ env:
   ALIYUN_REGISTRY: crpi-jlzkfoisf4mhudx0.cn-heyuan.personal.cr.aliyuncs.com
   ALIYUN_NAMESPACE: fnnas-docker
 
-jobs:  
-  sync-images:    
+jobs:
+  sync-images:
     runs-on: ubuntu-latest
     strategy:
-      # 【核心修改 1】限制最大并发数为 1，强制任务一个接一个地按顺序串行执行
+      # 限制最大并发数为 1，强制任务一个接一个地按顺序串行执行
       max-parallel: 1      
-      # 【核心修改 2】开启 fail-fast，如果当前镜像同步失败，立即停止后续尚未执行的任务
+      # 开启 fail-fast，如果当前镜像同步失败，立即停止后续尚未执行的任务
       fail-fast: true      
       matrix:
         # 【镜像清单】以后加镜像，只需要在这个列表里增加两行即可！
@@ -25,7 +25,7 @@ jobs:
           - source: 'yuanter/unlock-music:latest'
             target: 'unlock-music:latest'
             
-          # 2. 之前你提到的 OpenClaw
+          # 2. OpenClaw
           - source: 'ghcr.io/phioranex/openclaw-docker:latest'
             target: 'openclaw:latest'
 
@@ -40,6 +40,10 @@ jobs:
           # 5. nginx
           - source: 'nginx:latest'
             target: 'nginx:latest'
+            
+          # 6. MetaTube 影视刮削服务端 (本次新增)
+          - source: 'metatube/metatube-server:latest'
+            target: 'metatube-server:latest'
           
     steps:      
       - name: 登录阿里云镜像仓库        
