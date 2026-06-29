@@ -41,9 +41,17 @@ jobs:
           - source: 'nginx:latest'
             target: 'nginx:latest'
             
-          # 6. MetaTube 影视刮削服务端 (本次新增)
+          # 6. MetaTube 影视刮削服务端
           - source: 'ghcr.io/metatube-community/metatube-server:latest'
             target: 'metatube-server:latest'
+            
+          # 7. Squidlr 运行环境 
+          - source: 'mcr.microsoft.com/dotnet/aspnet:9.0'
+            target: 'dotnet-aspnet:9.0'
+            
+          # 8. Squidlr 编译环境 
+          - source: 'mcr.microsoft.com/dotnet/sdk:9.0'
+            target: 'dotnet-sdk:9.0'
           
     steps:      
       - name: 登录阿里云镜像仓库        
