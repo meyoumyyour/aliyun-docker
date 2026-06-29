@@ -45,13 +45,11 @@ jobs:
           - source: 'ghcr.io/metatube-community/metatube-server:latest'
             target: 'metatube-server:latest'
             
-          # 7. Squidlr 运行环境 
-          - source: 'mcr.microsoft.com/dotnet/aspnet:9.0'
-            target: 'dotnet-aspnet:9.0'
+          # 7. filebrowser
+          - source: 'filebrowser/filebrowser:latest'
+            target: 'filebrowser:latest'
             
-          # 8. Squidlr 编译环境 
-          - source: 'mcr.microsoft.com/dotnet/sdk:9.0'
-            target: 'dotnet-sdk:9.0'
+          
           
     steps:      
       - name: 登录阿里云镜像仓库        
