@@ -52,6 +52,10 @@ jobs:
           # 8. 推特视频下载
           - source: 'alexta69/metube:latest'
             target: 'metube:latest'
+
+          # 9. nginx-basic-auth
+          - source: 'dtcokr/nginx-basic-auth:latest'
+            target: 'nginx-basic-auth:latest'
             
           
           
