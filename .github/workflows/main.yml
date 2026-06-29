@@ -48,6 +48,10 @@ jobs:
           # 7. filebrowser
           - source: 'filebrowser/filebrowser:latest'
             target: 'filebrowser:latest'
+
+          # 8. 推特视频下载
+          - source: 'alexta69/metube:latest'
+            target: 'metube:latest'
             
           
           
